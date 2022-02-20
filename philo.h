@@ -18,49 +18,59 @@
 #define  END "\0330m"
 */
 
+//repartir avec que la structure philo qui pourrait s appeler tab_philo
+//et qui contiendrait les philo (threads)
+//philo->philo[i]
 typedef struct  s_philo
 {
    // struct  s_philo *next;
     int id;
+    long unsigned int last_meal;
+    unsigned int nb_philosophers;
+    long unsigned int time_to_die;
+    long unsigned int time_to_eat;
+    long unsigned int time_to_sleep;
+       int total_meals_for_each_philo;
     int total_meals;
-    int last_meal;
+    int option;
     /*int right_fork_int;
     int left_fork_int;*/
-    pthread_t philo;
     pthread_mutex_t *left_fork;
-    pthread_mutex_t is_eating;
     pthread_mutex_t *right_fork;
+    pthread_mutex_t is_eating;
+   
     struct  s_data *data;
 
 }   t_philo;
 
 typedef struct  s_data
 {
+    /*
    // struct  s_data *next;
     unsigned int nb_philosophers;
     int option;
-    int time_to_die;
-    int time_to_eat;
-    int time_to_sleep;
+     long unsigned int time_to_die;
+     long unsigned int time_to_eat;
+     long unsigned int time_to_sleep;
     int total_meals_for_each_philo;
+    */
     int one_philo_died;
     long start_time; // mettre timestruct?
     pthread_mutex_t print_activity;
-    pthread_mutex_t end_simulation;
-    pthread_mutex_t eating;
-//    pthread_mutex_t forks[200];
+   // pthread_mutex_t end_simulation;
+   // pthread_mutex_t eating;
+   
+    pthread_mutex_t forks[200];
     pthread_t philo_lives[200];
-    t_philo philo[200];
+    
  
 }   t_data;
 
-/*parsing*/
-int   save_data(int ac, char **av, t_data *data);
-int	get_right_args(int ac, char **av);
 
-/*init philo*/
+int	right_args(int ac, char **av);
+
 void	add_philo(t_philo *philo, unsigned int i);
-void	share_left_fork_with_right_neighbour(t_philo *philo, t_data *data);
+void share_left_fork_with_right_neighbour(t_philo *philo);
 
 int ft_atoi(char *s);
  
@@ -73,8 +83,8 @@ t_philo	*ft_lstlast(t_philo *lst);
 void	ft_lstadd_back(t_philo **lst, t_philo *new);
 
 
-void init_philos(t_data *data);
-
+//void init_philos(t_data *data);
+void	init_philos(t_philo *philo, char **av, int option);
 void	*ft_calloc(size_t count, size_t size);
 void    print_activity(t_philo *philo, char *action);
 long int current_timestamp(void);

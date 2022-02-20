@@ -1,11 +1,6 @@
 #include "philo.h"
 
-void one_philo(t_data *data)
-{
-    print_activity(data->philo, "has taken a fork\n");
-    timer(data->time_to_die);
-    print_activity(data->philo, "is dead\n");
-}
+
 
 /*
 time_to_die: is in milliseconds, if a philosopher doesn’t start eating ’time_to_die’

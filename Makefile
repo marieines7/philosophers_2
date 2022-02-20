@@ -1,6 +1,5 @@
 SRCS    =parsing.c \
 	   main.c\
-       parsing.c \
        philo_life.c \
        utils.c \
        init_philo.c \
