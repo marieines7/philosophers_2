@@ -14,7 +14,7 @@ HEADER = philo.h
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra #-pthread -g #-fsanitize=address
+CFLAGS = -Wall -Werror -Wextra -pthread -g -fsanitize=address
 RM = rm -f
 
 .c.o:

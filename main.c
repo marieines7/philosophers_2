@@ -50,13 +50,13 @@ int end_simulation(t_philo *philo)
 {
     unsigned int    i;
     int             all_had_enough_to_eat;
-    int             one_died;
+   // int             one_died;
     t_data *data;
 
     data = philo->data;
 
     i = 0;
-    one_died = 0;
+   // one_died = 0;
     all_had_enough_to_eat = 1;
     while (i < philo->data->nb_philosophers)
     {
@@ -133,7 +133,7 @@ void *simulation(void *arg)
 */
 void	do_activities_stimultanously(t_data *data)
 {
-	int	i;
+	unsigned int	i;
 
 	i = 0;
 /*	t_philo *philo;
@@ -159,6 +159,7 @@ void	do_activities_stimultanously(t_data *data)
 void	share_left_fork_with_right_neighbour(t_philo *philo, t_data *data)
 {
 	unsigned int	i;
+	(void)philo;
 	//t_data	*data;
 
 	//data = philo->data;
@@ -211,31 +212,30 @@ int main(int ac, char **av)
 	//t_data *data;
 	t_data data;
 //data = malloc(sizeof(*data));
-    if (ac == 1)
-        return(printf("nb arguments\n"));
+	if (ac == 1)
+        	return(printf("nb arguments\n"));
 	if(!get_right_args(ac, av))
-        return(0);
+        	return(0);
 	if (save_data(ac, av, &data) == -1)
-        return (0);
+		return (0);
 	pthread_mutex_init(&data.print_activity, NULL);
-    pthread_mutex_init(&data.end_simulation, NULL);
-    pthread_mutex_init(&data.eating, NULL);
-  
-    printf("init philos...\n");
-    init_philos(&data);
-    data.start_time = current_timestamp();
-    printf("data start time = %ld\n", data.start_time);
-	unsigned int i = -1;
+	pthread_mutex_init(&data.end_simulation, NULL);
+	pthread_mutex_init(&data.eating, NULL);
+	printf("init philos...\n");
+	init_philos(&data);
+	data.start_time = current_timestamp();
+	printf("data start time = %ld\n", data.start_time);
+//	unsigned int i = -1;
     printf("check init... : \n");
 /*    t_philo *philo = data.philo;
 	while(++i < data.nb_philosophers)
         	printf("\nphilo id = %d, total meal = %d, last meal = %d", philo[i].id, philo[i].total_meals, philo[i].last_meal);
 */
-if (data.nb_philosophers == 1)
-        one_philo(&data);
-    else
-        do_activities_stimultanously(&data);
+	if (data.nb_philosophers == 1)
+		one_philo(&data);
+	else
+		do_activities_stimultanously(&data);
 
   //free_all(data);
-    return (0);
+	return (0);
 }
