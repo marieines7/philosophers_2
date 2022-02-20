@@ -40,7 +40,7 @@ void    print_activity(t_philo *philo, char *activity)
     printf("%ldms:  philosopher %d   %s\n", current_timestamp() - data->start_time, philo->id, activity); // checker pour le +1 philo id
     pthread_mutex_unlock(&data->print_activity);
 }
-
+/*
 void free_all(t_data *data)
 {
 	int i;
@@ -56,3 +56,4 @@ void free_all(t_data *data)
     pthread_mutex_destroy(&data->end_simulation);
  //   free(&philo);
 }
+*/

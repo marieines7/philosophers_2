@@ -64,8 +64,14 @@ void	*ft_calloc(size_t count, size_t size)
 	return (s);
 }
 
-int    save_data(int ac, char **av, t_data *data)
+/*
+int    save_data(int ac, char **av, t_data **data)
 {
+
+//	t_data	*data;
+
+//data = malloc(sizeof(*data));
+//	data = malloc(sizeof(*data));
     data->one_philo_died = 0;
     data->nb_philosophers = ft_atoi(av[1]);
     data->time_to_die = ft_atoi(av[2]);
@@ -80,6 +86,46 @@ int    save_data(int ac, char **av, t_data *data)
 		data->total_meals_for_each_philo = ft_atoi(av[5]);
 	else
 		data->total_meals_for_each_philo = INT_MAX;
+    printf("\nnb_philo  %d, time die = %d, time eat = %d, time sleep %d, meals %d\n", data->nb_philosophers, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->total_meals_for_each_philo);
+    if (data->nb_philosophers <= 0 || data->time_to_die <= 0 || data->time_to_eat <= 0 || data->time_to_sleep <= 0 || data->total_meals_for_each_philo <= 0)
+    {
+        printf ("pas possible");
+        return(-1);
+    }
+	if (data->nb_philosophers > INT_MAX || data->time_to_die > INT_MAX || data->time_to_eat > INT_MAX || data->time_to_sleep > INT_MAX || data->total_meals_for_each_philo > INT_MAX)
+    {
+        printf ("pas possible bnt max");
+        return(-1);
+    }
+	return (0);
+}
+*/
+
+
+int    save_data(int ac, char **av, t_data *data)
+{
+
+//	t_data	*data;
+
+//*data = malloc(sizeof(*data));
+//	data = malloc(sizeof(*data));
+    data->one_philo_died = 0;
+    data->nb_philosophers = ft_atoi(av[1]);
+    data->time_to_die = ft_atoi(av[2]);
+    if (data->nb_philosophers > 200)
+    {
+        printf ("Interdiction : trop de philosophers\n");
+        return(-1);
+    }
+    data->time_to_eat = ft_atoi(av[3]);
+    data->time_to_sleep = ft_atoi(av[4]);
+	if (ac == 6)
+	{
+		data->total_meals_for_each_philo = ft_atoi(av[5]);
+		data->option = 1;
+	}
+	else
+		data->option = 0;
     printf("\nnb_philo  %d, time die = %d, time eat = %d, time sleep %d, meals %d\n", data->nb_philosophers, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->total_meals_for_each_philo);
     if (data->nb_philosophers <= 0 || data->time_to_die <= 0 || data->time_to_eat <= 0 || data->time_to_sleep <= 0 || data->total_meals_for_each_philo <= 0)
     {
