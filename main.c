@@ -48,10 +48,10 @@ typedef struct  s_data
 	pthread_mutex_t *forks;
 	unsigned long start_time;
 	unsigned int nb_philosophers;
-	int time_to_die;
+	unsigned long time_to_die;
 	int time_to_eat;
 	int time_to_sleep;
-	int total_meals_for_each_philo;
+	unsigned int total_meals_for_each_philo;
 	int	one_philo_died;
 	int option;
 	int total_meals; //meal count
@@ -124,14 +124,6 @@ int ft_atoi(char *s)
 	i = 0;
 	sign = 1;
 	n = 0;
-	/*while (s[i] == ' ')
-		i++;
-	while (s[i] && ((s[i] == '+') || (s[i] == '-')))
-	{
-		if (s[i++] == '-')
-			sign = sign * -1;
-	}
-	*/
 	while (s[i] && s[i] >= '0' && s[i] <= '9')
 		n = n * 10 + (s[i++] - '0');
 	return (sign * (int)n);
@@ -147,11 +139,6 @@ int	right_args(int ac, char **av)
 		printf("invalid nb of args. number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat\n");
 		return (0);
 	}
-	if (!all_are_digits(av))
-	{
-		printf("stray character that aka not all are positive numbers\n");
-		return (0);
-	}
 	while(av[++j])
 	{
 		if (ft_atoi(av[1]) > 200 || ft_atoi(av[j]) <= 0 || ft_atoi(av[j]) > INT_MAX)
@@ -159,6 +146,11 @@ int	right_args(int ac, char **av)
 			printf("too big of a value or a negative value. not possible. for your info no more than 200 philos are possible\n");
 			return (0);
 		}	
+	}
+	if (!all_are_digits(av))
+	{
+		printf("stray character that aka not all are positive numbers\n");
+		return (0);
 	}
 	return(1);
 }
@@ -179,7 +171,7 @@ int    save_data(int ac, char **av, t_data *data)
 		data->option = 0;
 	}
 		
-    printf("\nnb_philo  %d, time die = %d, time eat = %d, time sleep %d, meals %d\n", data->nb_philosophers, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->total_meals_for_each_philo);
+    printf("\nnb_philo  %d, time die = %ld, time eat = %d, time sleep %d, meals %d\n", data->nb_philosophers, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->total_meals_for_each_philo);
 	return (0);
 }
 
@@ -248,11 +240,8 @@ int one_philo_died(t_philo *philo)
 int end_simulation(t_philo *philo)
 {
     unsigned int    i;
-    int             all_had_enough_to_eat;
+    unsigned int             all_had_enough_to_eat;
    // int             one_died;
-    t_data *data;
-
-    data = philo->data;
 
     i = 0;
    // one_died = 0;
@@ -260,11 +249,10 @@ int end_simulation(t_philo *philo)
     while (i < philo->data->nb_philosophers)
     {
         pthread_mutex_lock(&philo->data->eating);
-        if (philo[i].total_meals < philo->data->total_meals_for_each_philo)
+        if (philo->total_meals < philo->data->total_meals_for_each_philo)
             all_had_enough_to_eat = 0;
         pthread_mutex_unlock(&philo->data->eating);
-       
-		if (one_philo_died(&philo[i]))
+	if (one_philo_died(philo))
         {
             philo->data->one_philo_died = 1;
             break;
@@ -272,8 +260,8 @@ int end_simulation(t_philo *philo)
         i++;
     }
     pthread_mutex_lock(&philo->data->end_simulation);
-    if ((philo->data->option == 0 && (philo->data->one_philo_died == 1)) 
-	|| (philo->data->option == 1 && (philo->data->total_meals_for_each_philo != -1) && (all_had_enough_to_eat == 1)))
+    if ((philo->data->one_philo_died == 1) ||
+	((philo->data->option == 1) && ((int)philo->data->total_meals_for_each_philo != -1) && (all_had_enough_to_eat == 1)))
         return(1);
     pthread_mutex_unlock(&philo->data->end_simulation);
     return (0);
@@ -282,20 +270,18 @@ int end_simulation(t_philo *philo)
 void *simulation(void *arg)
 {
     t_philo *philo;
- //   int     death;
+   int     death;
 
     philo = (t_philo *)arg;
-	int all_had_enough_to_eat = 1;
 	while (1)
 	{
 		philo_life(philo);
 		if (philo->total_meals < philo->data->total_meals_for_each_philo)
-            all_had_enough_to_eat = 0;
-		else
+            		all_had_enough_to_eat = 0;
+		if (all_had_enough_to_eat == 1)
 			break;
 	}
-	 
- /*   pthread_mutex_lock(&philo->data->end_simulation);
+   /* pthread_mutex_lock(&philo->data->end_simulation);
     death = end_simulation(philo->data->philo);
     pthread_mutex_unlock(&philo->data->end_simulation);
     while (death == 0)
@@ -306,9 +292,9 @@ void *simulation(void *arg)
         death = end_simulation(philo);
         pthread_mutex_unlock(&philo->data->end_simulation);
     }
-	*/
+	
 	//printf("philo %d: ok je suis en train de vivre\n", philo->id);
-	return(0);
+*/	return(0);
 }
 /*
 void *simulation(void *arg)
@@ -345,7 +331,7 @@ int	do_activities_stimultanously(t_data *data)
 		}
 		else if ((i % 2) == 1)
 		{
-			timer(300);
+			timer(0.001);
 			if (pthread_create(&data->philo[i].philo_life, NULL, &simulation, &data->philo[i]) != 0)
 			{
 				printf("error creating philo life\n");
@@ -365,25 +351,19 @@ int	do_activities_stimultanously(t_data *data)
 	return(0);
 }
 
+
+void one_philo(t_philo *philo)
+{
+    print_activity(philo, "has taken a fork\n");
+    timer(philo->data->time_to_die);
+    print_activity(philo, "is dead\n");
+}
+
+
 int init_simulation(t_data *data)
 {
 	unsigned int i;
 
-	if (pthread_mutex_init(&data->print_activity, NULL) != 0)
-	{
-		printf("error init print\n");
-		return(0);
-	}	
-	if (pthread_mutex_init(&data->end_simulation, NULL) != 0)
-	{
-		printf("error end simulation\n");
-		return(0);
-	}
-	if (pthread_mutex_init(&data->eating, NULL) != 0)
-	{
-		printf("error init print\n");
-		return(0);
-	}
 	data->philo = malloc(data->nb_philosophers * sizeof(t_philo));
 	if(!data->philo)
 		return (0);
@@ -392,8 +372,15 @@ int init_simulation(t_data *data)
 		return (0);
 	data->start_time = current_timestamp();
 	printf("deja init les forks etc je vais init philos\n");
+
 	if (!init_philos(data))
 		return (-1);
+
+	if (data->nb_philosophers == 1)
+	{
+		one_philo(data->philo);
+		return(1);
+	}
 	i = -1;
 	if (!do_activities_stimultanously(data))
 		return (-1);
@@ -401,20 +388,14 @@ int init_simulation(t_data *data)
 	i = -1;
 	while (++i < data->nb_philosophers)
 		pthread_mutex_destroy(&data->forks[i]);
-	free(data->philo);
-	free(data->forks);
+//	free(&data->philo);
+	free(&data->forks);
+	pthread_mutex_destroy(&data->print_activity);
+	pthread_mutex_destroy(&data->end_simulation);
+	pthread_mutex_destroy(&data->eating);
 	return (1);
 }
 
-
-void one_philo(t_philo *philo)
-{
-	int i;
-
-    print_activity(philo, "has taken a fork\n");
-    timer(philo->data->time_to_die);
-    print_activity(philo, "is dead\n");
-}
 
 int main(int ac, char **av)
 {
@@ -422,8 +403,29 @@ int main(int ac, char **av)
 	if(!right_args(ac, av))
 		return(0);
 	save_data(ac, av, &data);
-	if (data.nb_philosophers == 1)
-		one_philo(data.philo);
+
+	if (pthread_mutex_init(&data.print_activity, NULL) != 0)
+	{
+		printf("error init print\n");
+		return(0);
+	}
+	
+	if (pthread_mutex_init(&data.end_simulation, NULL) != 0)
+	{
+		printf("error end simulation\n");
+		return(0);
+	}
+	if (pthread_mutex_init(&data.eating, NULL) != 0)
+	{
+		printf("error init print\n");
+		return(0);
+	}
 	if(!init_simulation(&data))
 		return(0);
+/*	if (data.nb_philosophers == 1)
+	{
+		one_philo(&data);
+		return(0);
+	}
+*/
 }
