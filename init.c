@@ -6,7 +6,7 @@
 /*   By: mloubet <mloubet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:38:08 by mloubet           #+#    #+#             */
-/*   Updated: 2022/02/21 17:11:10 by mloubet          ###   ########.fr       */
+/*   Updated: 2022/02/21 17:27:41 by mloubet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int check_death(t_data *data)
 			data->stop = 1;
 			pthread_mutex_unlock(&data->end_simulation);
         		pthread_mutex_lock(&data->print_activity);
-        		printf("%ldms philo %d is dead\n", current_timestamp(), data->philo->id);
+        		printf("%ldms philosopher %d is dead\n", current_timestamp() - data->start_time, data->philo->id);
        		 	pthread_mutex_unlock(&data->print_activity);
        			 return(1);
    		 }
@@ -113,14 +113,14 @@ int	do_activities_stimultanously(t_data *data)
 		}
 		i++;
 	}
-/*	int end_simulation = 0;
+	int end_simulation = 0;
 	while(1)
 	{
-		end_simulation = check_end_simulation(data->philo);
+		end_simulation = check_death(data);
 		if (end_simulation == 1)
-			return(1);
+			break;
 	}
-	*/
+	
 	i = 0;
 	while (i < data->nb_philosophers)
 	{

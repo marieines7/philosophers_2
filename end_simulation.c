@@ -6,7 +6,7 @@
 /*   By: mloubet <mloubet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:39:03 by mloubet           #+#    #+#             */
-/*   Updated: 2022/02/21 17:11:14 by mloubet          ###   ########.fr       */
+/*   Updated: 2022/02/21 17:26:01 by mloubet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,11 @@ int check_death(t_data *data)
 void *simulation(void *arg)
 {
 	t_philo *philo;
-	int end_simulation;
+	
     	
 	philo = (t_philo *)arg;
+	/*
+	int end_simulation;
 	pthread_mutex_lock(&philo->data->end_simulation);
 	//end_simulation = philo->data->stop;
 	end_simulation = check_death(philo->data);
@@ -122,15 +124,14 @@ void *simulation(void *arg)
 		end_simulation = check_death(philo->data);
 		pthread_mutex_unlock(&philo->data->end_simulation);
 	}
-	/*
+	*/
+	
 //	while(1)
-	while(philo->total_meals < philo->data->total_meals_for_each_philo)
+	while((philo->data->option == 1 && philo->total_meals < philo->data->total_meals_for_each_philo) || philo->data->stop != 1)
 	{
 		philo_life(philo);
-		//if(philo_life(philo) == 0)
-		//	return (0);
 	}
-	*/
+	
 	return (0);
 }
 /*
