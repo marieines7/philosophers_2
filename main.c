@@ -186,6 +186,7 @@ int	init_philos(t_data *data)
 	{
 		data->philo[i].id = i + 1;
 		data->philo[i].last_meal = 0; //get ms??init file
+		data->philo[i].total_meals = 0; //get ms??init file
 		if(pthread_mutex_init(&data->philo[i].left_fork, NULL) != 0) /// & a remettre ?
 		{
 			printf("error init left fork de %d\n", data->philo[i].id);
@@ -209,6 +210,7 @@ void philo_life(t_philo *philo)
 	pthread_mutex_lock(&philo->data->eating);
 	philo->last_meal = current_timestamp(); //ou gettimeofday(&philo->last_eat, NULL); //philo->last_meal = current_timestamp(data->start_time);
 	philo->total_meals++;
+	printf("total mels %d\n", philo->total_meals);
 	pthread_mutex_unlock(&philo->data->eating);
 	print_activity(philo, "is eating");
 	timer(philo->data->time_to_eat);
@@ -270,16 +272,14 @@ int end_simulation(t_philo *philo)
 void *simulation(void *arg)
 {
     t_philo *philo;
-   int     death;
+  // int     death;
 
     philo = (t_philo *)arg;
-	while (1)
+	printf("je passe dans simulation. philo %d total meals eaten = %d; total meals to eat = %d\n", philo->id, philo->total_meals, philo->data->total_meals_for_each_philo);
+//	printf("philo %d has eaten %d meals", philo->id, philo->total_meals);
+	while ((philo->data->option == 1 && (philo->total_meals < philo->data->total_meals_for_each_philo)))
 	{
 		philo_life(philo);
-		if (philo->total_meals < philo->data->total_meals_for_each_philo)
-            		all_had_enough_to_eat = 0;
-		if (all_had_enough_to_eat == 1)
-			break;
 	}
    /* pthread_mutex_lock(&philo->data->end_simulation);
     death = end_simulation(philo->data->philo);
@@ -329,9 +329,13 @@ int	do_activities_stimultanously(t_data *data)
 			}
 				
 		}
-		else if ((i % 2) == 1)
+	}
+	i = -1;
+	while (++i < data->nb_philosophers)
+	{
+		if ((i % 2) == 1)
 		{
-			timer(0.001);
+			usleep(100);
 			if (pthread_create(&data->philo[i].philo_life, NULL, &simulation, &data->philo[i]) != 0)
 			{
 				printf("error creating philo life\n");
@@ -342,12 +346,23 @@ int	do_activities_stimultanously(t_data *data)
 	i = -1;
 	while (++i < data->nb_philosophers)
 	{
+	/*	printf("is is %i\n", i);
+		printf("is ok ? data %p\n", data);
+		printf("is ok ? data->philo %p\n", data->philo);
+		printf("is ok ? data->philo[i] %p\n", &data->philo[i]);
+		printf("is ok ? data->philo[i]->philo_life %p\n", &(data->philo[i].philo_life));
+	*/	 
+		 
+		pthread_join(data->philo[i].philo_life, NULL);
+/*
+		printf("coucou toii %d\n", i);
 		if (pthread_join(data->philo[i].philo_life, NULL) != 0)
 		{
 				printf("error doing stuff stimultanously\n");
 				return(0);
 		}
-	}	
+*/	}
+	printf("fin game\n");	
 	return(0);
 }
 
@@ -359,6 +374,16 @@ void one_philo(t_philo *philo)
     print_activity(philo, "is dead\n");
 }
 
+void free_all(t_data * data)
+{
+	if (data->philo)
+		free(data->philo);
+	if (data->forks)
+		free(data->forks);
+	pthread_mutex_destroy(&data->print_activity);
+	pthread_mutex_destroy(&data->end_simulation);
+	pthread_mutex_destroy(&data->eating);
+}
 
 int init_simulation(t_data *data)
 {
@@ -379,20 +404,21 @@ int init_simulation(t_data *data)
 	if (data->nb_philosophers == 1)
 	{
 		one_philo(data->philo);
+		free_all(data);
 		return(1);
 	}
 	i = -1;
-	if (!do_activities_stimultanously(data))
+	if (do_activities_stimultanously(data))
+	{
+		i = -1;
+		while (++i < data->nb_philosophers)
+			pthread_mutex_destroy(&data->forks[i]);
+		free_all(data);
+		return(0);
+	}
 		return (-1);
 	//pthread_join(data->end_simulation, NULL); // a rechecker
-	i = -1;
-	while (++i < data->nb_philosophers)
-		pthread_mutex_destroy(&data->forks[i]);
-//	free(&data->philo);
-	free(&data->forks);
-	pthread_mutex_destroy(&data->print_activity);
-	pthread_mutex_destroy(&data->end_simulation);
-	pthread_mutex_destroy(&data->eating);
+	printf("je passe par la\n");
 	return (1);
 }
 
@@ -422,10 +448,4 @@ int main(int ac, char **av)
 	}
 	if(!init_simulation(&data))
 		return(0);
-/*	if (data.nb_philosophers == 1)
-	{
-		one_philo(&data);
-		return(0);
-	}
-*/
 }
