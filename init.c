@@ -6,7 +6,7 @@
 /*   By: mloubet <mloubet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:38:08 by mloubet           #+#    #+#             */
-/*   Updated: 2022/02/21 17:27:41 by mloubet          ###   ########.fr       */
+/*   Updated: 2022/02/21 17:32:46 by mloubet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,8 +117,9 @@ int	do_activities_stimultanously(t_data *data)
 	while(1)
 	{
 		end_simulation = check_death(data);
+		//printf("end_simulation = %d", end_simulation);
 		if (end_simulation == 1)
-			break;
+			return(0);
 	}
 	
 	i = 0;
