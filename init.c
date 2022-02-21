@@ -62,7 +62,7 @@ int check_death(t_data *data)
 
 int	philo_life(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->left_fork);
+		pthread_mutex_lock(&philo->left_fork);
 	print_activity(philo, "has taken a fork");
 	pthread_mutex_lock(philo->right_fork);
 	print_activity(philo, "has taken a fork");
