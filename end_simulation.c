@@ -71,10 +71,10 @@ void *simulation(void *arg)
 void *simulation(void *arg)
 {
 	t_philo *philo;
-	int end_simulation;
+	//int end_simulation;
     	
 	philo = (t_philo *)arg;
-	pthread_mutex_lock(&philo->data->end_simulation);
+	/*pthread_mutex_lock(&philo->data->end_simulation);
 	end_simulation = philo->data->stop;
 	pthread_mutex_unlock(&philo->data->end_simulation);
 	while(end_simulation == 0)
@@ -83,6 +83,11 @@ void *simulation(void *arg)
 		pthread_mutex_lock(&philo->data->end_simulation);
 		end_simulation = philo->data->stop;
 		pthread_mutex_unlock(&philo->data->end_simulation);
+	}
+	*/
+	while(1)
+	{
+		philo_life(philo);
 	}
 	return (0);
 }
@@ -116,8 +121,8 @@ int end_simulation(t_philo *philo)
 int end_simulation_2(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->data->print_activity);
-        printf("%ldms philo %d is dead\n", current_timestamp(), philo->id);
-        pthread_mutex_unlock(&philo->data->print_activity);
+    printf("%ldms philo %d is dead\n", current_timestamp(), philo->id);
+    pthread_mutex_unlock(&philo->data->print_activity);
 	pthread_mutex_lock(&philo->data->end_simulation);
 	philo->data->stop = 1;
 	pthread_mutex_unlock(&philo->data->end_simulation);

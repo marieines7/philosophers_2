@@ -63,7 +63,7 @@ void philo_life(t_philo *philo)
 int	do_activities_stimultanously(t_data *data)
 {
 	unsigned int	i;
-	int		end_simulation;
+//	int		end_simulation;
 	i = -1;
 	while (++i < data->nb_philosophers)
 	{
@@ -90,13 +90,13 @@ int	do_activities_stimultanously(t_data *data)
 			}
 		}
 	}
-	while(1)
+/*	while(1)
 	{
-		end_simulation = check_end_simulation(data->philo);
+		int end_simulation = check_end_simulation(data->philo);
 		if (end_simulation == 1)
 			return(1);
 	}
-	i = -1;
+*/	i = -1;
 	while (++i < data->nb_philosophers)
 	{
 		if(pthread_join(data->philo[i].philo_life, NULL) != 0)

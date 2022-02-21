@@ -1,8 +1,8 @@
-SRCS    = main.c\
-		parsing.c \
-       end_simulation.c \
-       utils.c \
-       init.c \
+SRCS    = 	main.c\
+			parsing.c \
+       		end_simulation.c \
+       		utils.c \
+       		init.c \
 
 
 OBJS = ${SRCS:.c=.o}
@@ -13,7 +13,7 @@ HEADER = philo.h
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra -pthread -g3 -fsanitize=address
+CFLAGS = -Wall -Werror -Wextra -pthread -g -fsanitize=address
 RM = rm -f
 
 .c.o:
