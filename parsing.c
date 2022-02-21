@@ -1,26 +1,24 @@
 #include "philo.h"
 
-
-//parsing
 int all_are_digits(char **s)
 {
-    int i;
-    int j;
+	int i;
+	int j;
 
-    j = 0;
-    while(s[++j])
-    {
-        i = -1;
-        while(s[j][++i])
-        {
-            if (!(s[j][i] >= '0' && s[j][i] <= '9'))
-                return(0);
-        }
-    }
-    return(1);
+	j = 0;
+	while(s[++j])
+	{
+		i = -1;
+		while(s[j][++i])
+		{
+			if (!(s[j][i] >= '0' && s[j][i] <= '9'))
+				return(0);
+		}
+	}
+	return(1);
 }
 
-int ft_atoi(char *s)
+int	ft_atoi(char *s)
 {
 	int		i;
 	int		sign;
@@ -50,7 +48,7 @@ int	right_args(int ac, char **av)
 		{
 			printf("too big of a value or a negative value. not possible. for your info no more than 200 philos are possible\n");
 			return (0);
-		}	
+		}
 	}
 	if (!all_are_digits(av))
 	{
@@ -60,12 +58,12 @@ int	right_args(int ac, char **av)
 	return(1);
 }
 
-int    save_data(int ac, char **av, t_data *data)
+int	save_data(int ac, char **av, t_data *data)
 {
-    data->nb_philosophers = ft_atoi(av[1]);
-    data->time_to_die = ft_atoi(av[2]);
-    data->time_to_eat = ft_atoi(av[3]);
-    data->time_to_sleep = ft_atoi(av[4]);
+	data->nb_philosophers = ft_atoi(av[1]);
+	data->time_to_die = ft_atoi(av[2]);
+	data->time_to_eat = ft_atoi(av[3]);
+	data->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
 	{
 		data->total_meals_for_each_philo = ft_atoi(av[5]);
@@ -74,8 +72,7 @@ int    save_data(int ac, char **av, t_data *data)
 	else
 	{
 		data->option = 0;
-	}
-		
-    printf("\nnb_philo  %d, time die = %ld, time eat = %d, time sleep %d, meals %d\n", data->nb_philosophers, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->total_meals_for_each_philo);
+	}	
+	printf("\nnb_philo  %d, time die = %ld, time eat = %d, time sleep %d, meals %d\n", data->nb_philosophers, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->total_meals_for_each_philo);
 	return (0);
 }

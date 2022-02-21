@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   end_simulation.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mloubet <mloubet@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/21 16:39:03 by mloubet           #+#    #+#             */
+/*   Updated: 2022/02/21 17:11:14 by mloubet          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 int one_philo_died(t_philo *philo)
@@ -68,27 +80,57 @@ void *simulation(void *arg)
 	return(0);
 }
 */
+/*
+int check_death(t_data *data)
+{
+	unsigned int i;
+
+	i = 0;
+	while(i < data->nb_philosophers)
+	{
+		  if ((current_timestamp() - data->philo->last_meal) > data->time_to_die)
+  		  {
+			pthread_mutex_lock(&data->end_simulation);
+			data->stop = 1;
+			pthread_mutex_unlock(&data->end_simulation);
+        		pthread_mutex_lock(&data->print_activity);
+        		printf("%ldms philo %d is dead\n", current_timestamp(), data->philo->id);
+       		 	pthread_mutex_unlock(&data->print_activity);
+       			 return(1);
+   		 }
+			i++;
+	}
+	return(0);
+}
+*/
+
 void *simulation(void *arg)
 {
 	t_philo *philo;
-	//int end_simulation;
+	int end_simulation;
     	
 	philo = (t_philo *)arg;
-	/*pthread_mutex_lock(&philo->data->end_simulation);
-	end_simulation = philo->data->stop;
+	pthread_mutex_lock(&philo->data->end_simulation);
+	//end_simulation = philo->data->stop;
+	end_simulation = check_death(philo->data);
 	pthread_mutex_unlock(&philo->data->end_simulation);
 	while(end_simulation == 0)
 	{
 		philo_life(philo);
 		pthread_mutex_lock(&philo->data->end_simulation);
-		end_simulation = philo->data->stop;
+		//end_simulation = philo->data->stop;
+		end_simulation = check_death(philo->data);
 		pthread_mutex_unlock(&philo->data->end_simulation);
 	}
-	*/
-	while(1)
+	/*
+//	while(1)
+	while(philo->total_meals < philo->data->total_meals_for_each_philo)
 	{
 		philo_life(philo);
+		//if(philo_life(philo) == 0)
+		//	return (0);
 	}
+	*/
 	return (0);
 }
 /*
@@ -143,9 +185,9 @@ int check_end_simulation(t_philo *philo)
 	unsigned int i;
 	unsigned int j;
 
-	i = -1;
+	i = 0;
 	j = 0;
-	while(++i < philo->data->nb_philosophers)
+	while(i < philo->data->nb_philosophers)
 	{
 		pthread_mutex_lock(&philo[i].data->eating);
 		if(philo[i].total_meals == philo[i].data->total_meals_for_each_philo)
@@ -155,11 +197,13 @@ int check_end_simulation(t_philo *philo)
 			if(j == philo->data->nb_philosophers)
 				return(end_simulation(philo));
 		}
-		if ((current_timestamp() - philo[i].last_meal) > philo[i].data->time_to_die) //death
+	/*	if ((current_timestamp() - philo[i].last_meal) > philo[i].data->time_to_die) //death
 				return(end_simulation_2(&philo[i]));
 		else
 			continue_simulation(&philo[i]);
 		pthread_mutex_lock(&philo[i].data->eating);
+		*/
+		i++;
 	}
 	return(0);
 }
@@ -196,7 +240,6 @@ void free_all(t_data * data)
 
 int init_simulation(t_data *data)
 {
-	unsigned int i;
 
 	data->philo = malloc(data->nb_philosophers * sizeof(t_philo));
 	if(!data->philo)
@@ -216,15 +259,17 @@ int init_simulation(t_data *data)
 		free_all(data);
 		return(1);
 	}
-	i = -1;
-	if (do_activities_stimultanously(data))
+//	unsigned int i = 0;
+	do_activities_stimultanously(data);
+	unsigned int i = 0;
+	while (i < data->nb_philosophers)
 	{
-		i = -1;
-		while (++i < data->nb_philosophers)
-			pthread_mutex_destroy(&data->forks[i]);
-		free_all(data);
-		return(0);
-	}
+		pthread_mutex_destroy(&data->forks[i]);
+		i++;
+	}	
+	free_all(data);
+
+	
 	printf("je passe par la\n");
 	return (1);
 }

@@ -57,7 +57,7 @@ int    save_data(int ac, char **av, t_data *data);
 
 //init
 int	init_philos(t_data *data);
-void philo_life(t_philo *philo);
+int philo_life(t_philo *philo);
 int	do_activities_stimultanously(t_data *data);
 void one_philo(t_philo *philo);
 void free_all(t_data * data);
