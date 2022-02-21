@@ -1,8 +1,8 @@
 SRCS    = main.c\
-	#parsing.c \
-       #philo_life.c \
-       #utils.c \
-       #init_philo.c \
+		parsing.c \
+       end_simulation.c \
+       utils.c \
+       init.c \
 
 
 OBJS = ${SRCS:.c=.o}
