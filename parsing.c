@@ -1,21 +1,33 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mloubet <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/02/21 21:53:42 by mloubet           #+#    #+#             */
+/*   Updated: 2022/02/21 21:58:34 by mloubet          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-int all_are_digits(char **s)
+int	all_are_digits(char **s)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	j = 0;
-	while(s[++j])
+	while (s[++j])
 	{
 		i = -1;
-		while(s[j][++i])
+		while (s[j][++i])
 		{
 			if (!(s[j][i] >= '0' && s[j][i] <= '9'))
-				return(0);
+				return (0);
 		}
 	}
-	return(1);
+	return (1);
 }
 
 int	ft_atoi(char *s)
@@ -34,19 +46,22 @@ int	ft_atoi(char *s)
 
 int	right_args(int ac, char **av)
 {
-	int j;
+	int	j;
 
 	j = 0;
 	if ((ac != 5) && (ac != 6))
 	{
-		printf("invalid nb of args. number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat\n");
+		printf("invalid nb of args. number_of_philosophers time_to_die \
+			time_to_eat time_to_sleep [number_of_time philo_must_eat\n");
 		return (0);
 	}
-	while(av[++j])
+	while (av[++j])
 	{
-		if (ft_atoi(av[1]) > 200 || ft_atoi(av[j]) <= 0 || ft_atoi(av[j]) > INT_MAX)
+		if (ft_atoi(av[1]) > 200 || ft_atoi(av[j]) <= 0
+			|| ft_atoi(av[j]) > INT_MAX)
 		{
-			printf("too big of a value or a negative value. not possible. for your info no more than 200 philos are possible\n");
+			printf("too big of a value or a negative value. not possible.\
+			for your info no more than 200 philos are possible\n");
 			return (0);
 		}
 	}
@@ -55,7 +70,7 @@ int	right_args(int ac, char **av)
 		printf("stray character that aka not all are positive numbers\n");
 		return (0);
 	}
-	return(1);
+	return (1);
 }
 
 int	save_data(int ac, char **av, t_data *data)
@@ -73,6 +88,9 @@ int	save_data(int ac, char **av, t_data *data)
 	{
 		data->option = 0;
 	}	
-	printf("\nnb_philo  %d, time die = %ld, time eat = %d, time sleep %d, meals %d\n", data->nb_philosophers, data->time_to_die, data->time_to_eat, data->time_to_sleep, data->total_meals_for_each_philo);
+	printf("\nnb_philo  %d, time die = %ld, time eat = %d, time sleep %d, \
+		meals %d\n", data->nb_philosophers, data->time_to_die, \
+		data->time_to_eat, \
+		data->time_to_sleep, data->total_meals_for_each_philo);
 	return (0);
 }
