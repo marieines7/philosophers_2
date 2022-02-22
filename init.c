@@ -12,90 +12,84 @@
 
 #include "philo.h"
 
-int	init_philos(t_data *data)
+void	init_philo(t_data *data)
 {
-	unsigned int	i;
+	int	i;
 
-	i = 0;
-	while (i < data->nb_philosophers)
+	i = -1;
+	while (++i < data->nb_philosophers)
 	{
-		data->philo[i].id = i + 1;
-		data->philo[i].last_meal = 0;
-		data->philo[i].total_meals = 0;
-		pthread_mutex_init(&data->philo[i].left_fork, NULL);
+		pthread_mutex_init(&data->forks[i], NULL);
+		data->philo[i].id = i;
+		data->philo[i].last_meal = current_timestamp();
 		data->philo[i].data = data;
-		i++;
-	}
-	i = 0;
-	while (i < data->nb_philosophers)
-	{
+		data->philo[i].left_fork = &data->forks[i];
 		if (i == data->nb_philosophers - 1)
-			data->philo[i].right_fork = &data->philo[0].left_fork;
+			data->philo[i].right_fork = &data->forks[0];
 		else
-			data->philo[i].right_fork = &data->philo[i + 1].left_fork;
-		i++;
+			data->philo[i].right_fork = &data->forks[i + 1];
 	}
+}
+
+void start_lives_simultaneously(t_data *data)
+{
+	int i;
+
+	i = -1;
+	while (++i < data->nb_philosophers)
+	{
+		if ((i % 2) == 0)
+			pthread_create(&data->philo[i].philo_life, NULL, &simulation, &data->philo[i]);
+		else if ((i % 2) == 1)
+		{
+			usleep(100);
+			pthread_create(&data->philo[i].philo_life, NULL, &simulation, &data->philo[i]);
+		}
+	}
+	pthread_create(&data->end_simulation, NULL, &end_simulation, data);
+	i = -1;
+	while (++i < data->nb_philosophers)
+		pthread_join(data->philo[i].philo_life, NULL);
+	pthread_join(data->end_simulation, NULL);
+
+}
+
+void one_philo(t_philo *philo)
+{
+    print_activity(philo, "has taken a fork\n");
+    timer(philo->data->time_to_die);
+    print_activity(philo, "is dead\n");
+}
+
+int	init(t_data *data)
+{
+	data->philo = malloc(data->nb_philosophers * sizeof(t_philo));
+	if (!data->philo)
+		return (0);
+	data->forks = malloc(data->nb_philosophers * sizeof(pthread_mutex_t));
+	if (!data->forks)
+		return (0);
+	pthread_mutex_init(&data->print_activity, NULL);
+	data->start_time = current_timestamp();
+	init_philo(data);
+	if (data->nb_philosophers == 1)
+	{
+		one_philo(data->philo);
+		free_all(data);
+		return(1);
+	}
+	start_lives_simultaneously(data);
+	free_all(data);
 	return (1);
 }
 
-int	philo_life(t_philo *philo)
+int	main(int ac, char **av)
 {
-	pthread_mutex_lock(&philo->left_fork);
-	print_activity(philo, "has taken a fork");
-	pthread_mutex_lock(philo->right_fork);
-	print_activity(philo, "has taken a fork");
-	pthread_mutex_lock(&philo->data->eating);
-	philo->last_meal = current_timestamp();
-	philo->total_meals++;
-	printf("total mels in philo life %d\n", philo->total_meals);
-	pthread_mutex_unlock(&philo->data->eating);
-	print_activity(philo, "is eating");
-	timer(philo->data->time_to_eat);
-	pthread_mutex_unlock(&philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
-	print_activity(philo, "is sleeping");
-	timer(philo->data->time_to_sleep);
-	print_activity(philo, "is thinking");
-	return (0);
-}
-
-int	do_activities_stimultanously(t_data *data)
-{
-	unsigned int	i;
-	int		end_simulation;
-
-	i = 0;
-	while (i < data->nb_philosophers)
-	{
-		if ((i % 2) == 0)
-			pthread_create(&data->philo[i].philo_life, \
-				NULL, &simulation, &data->philo[i]);
-		i++;
-	}
-	i = 0;
-	while (i < data->nb_philosophers)
-	{
-		if ((i % 2) == 1)
-		{
-			usleep(100);
-			pthread_create(&data->philo[i].philo_life, \
-				NULL, &simulation, &data->philo[i]);
-		}
-		i++;
-	}
-	end_simulation = 0;
-	while (1)
-	{
-		end_simulation = check_death(data->philo);
-		if (end_simulation == 1)
-			return (0);
-	}
-	i = 0;
-	while (i < data->nb_philosophers)
-	{
-		pthread_join(data->philo[i].philo_life, NULL);
-		i++;
-	}
-	printf("fin game\n");	
+	t_data	data;
+	
+	if(!right_args(ac, av))
+		return(0);
+	save_right_data(&data, ac, av);
+	init(&data);
 	return (0);
 }

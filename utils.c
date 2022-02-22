@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-long int	current_timestamp(void)
+unsigned long	current_timestamp(void)
 {
 	long int	time;
 	struct timeval	current_time;
@@ -37,14 +37,29 @@ void	timer(int activity_duration)
 	}
 }
 
-void	print_activity(t_philo *philo, char *activity)
+unsigned long	when_in_ms(unsigned long start_time)
 {
-	pthread_mutex_lock(&philo->data->end_simulation);
-	if (philo->data->stop == 1)
-		return ;
-	pthread_mutex_unlock(&philo->data->end_simulation);
-	pthread_mutex_lock(&philo->data->print_activity);
-	printf("%ldms:  philosopher %d   %s\n", \
-		current_timestamp() - philo->data->start_time, philo->id, activity);
-	pthread_mutex_unlock(&philo->data->print_activity);
+	return(current_timestamp() - start_time);
+}
+
+void free_all(t_data *data)
+{
+	int i;
+
+	i = -1;
+	while (++i < data->nb_philosophers)
+		pthread_mutex_destroy(&data->forks[i]);
+	free(data->philo);
+	free(data->forks);
+
+}
+
+int	ft_strcmp(char *s, char *t)
+{
+	while (*s && (*s == *t))
+	{
+		s++;
+		t++;
+	}
+	return (*s - *t);
 }

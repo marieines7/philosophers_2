@@ -73,24 +73,13 @@ int	right_args(int ac, char **av)
 	return (1);
 }
 
-int	save_data(int ac, char **av, t_data *data)
+int	save_right_data(t_data *data, int ac, char **av)
 {
 	data->nb_philosophers = ft_atoi(av[1]);
 	data->time_to_die = ft_atoi(av[2]);
 	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
-	{
 		data->total_meals_for_each_philo = ft_atoi(av[5]);
-		data->option = 1;
-	}
-	else
-	{
-		data->option = 0;
-	}	
-	printf("\nnb_philo  %d, time die = %ld, time eat = %d, time sleep %d, \
-		meals %d\n", data->nb_philosophers, data->time_to_die, \
-		data->time_to_eat, \
-		data->time_to_sleep, data->total_meals_for_each_philo);
 	return (0);
 }
