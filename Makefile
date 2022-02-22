@@ -1,5 +1,4 @@
-SRCS    = 	main.c\
-			parsing.c \
+SRCS    = 	parsing.c \
        		end_simulation.c \
        		utils.c \
        		init.c \

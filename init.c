@@ -6,7 +6,7 @@
 /*   By: mloubet <mloubet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:38:08 by mloubet           #+#    #+#             */
-/*   Updated: 2022/02/21 22:13:42 by mloubet          ###   ########.fr       */
+/*   Updated: 2022/02/22 15:47:22 by mloubet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,23 @@ void	init_philo(t_data *data)
 	}
 }
 
-void start_lives_simultaneously(t_data *data)
+void	start_lives_simultaneously(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < data->nb_philosophers)
-	{
 		if ((i % 2) == 0)
-			pthread_create(&data->philo[i].philo_life, NULL, &simulation, &data->philo[i]);
-		else if ((i % 2) == 1)
+			pthread_create(&data->philo[i].philo_life, \
+				NULL, &simulation, &data->philo[i]);
+	i = -1;
+	while (++i < data->nb_philosophers)
+	{
+		if ((i % 2) == 1)
 		{
 			usleep(100);
-			pthread_create(&data->philo[i].philo_life, NULL, &simulation, &data->philo[i]);
+			pthread_create(&data->philo[i].philo_life, \
+				NULL, &simulation, &data->philo[i]);
 		}
 	}
 	pthread_create(&data->end_simulation, NULL, &end_simulation, data);
@@ -51,14 +55,13 @@ void start_lives_simultaneously(t_data *data)
 	while (++i < data->nb_philosophers)
 		pthread_join(data->philo[i].philo_life, NULL);
 	pthread_join(data->end_simulation, NULL);
-
 }
 
-void one_philo(t_philo *philo)
+void	one_philo(t_philo *philo)
 {
-    print_activity(philo, "has taken a fork\n");
-    timer(philo->data->time_to_die);
-    print_activity(philo, "is dead\n");
+	print_activity(philo, "has taken a fork\n");
+	timer(philo->data->time_to_die);
+	print_activity(philo, "is dead\n");
 }
 
 int	init(t_data *data)
@@ -76,7 +79,7 @@ int	init(t_data *data)
 	{
 		one_philo(data->philo);
 		free_all(data);
-		return(1);
+		return (1);
 	}
 	start_lives_simultaneously(data);
 	free_all(data);
@@ -86,9 +89,9 @@ int	init(t_data *data)
 int	main(int ac, char **av)
 {
 	t_data	data;
-	
-	if(!right_args(ac, av))
-		return(0);
+
+	if (!right_args(ac, av))
+		return (0);
 	save_right_data(&data, ac, av);
 	init(&data);
 	return (0);

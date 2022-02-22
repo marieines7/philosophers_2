@@ -6,7 +6,7 @@
 /*   By: mloubet <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 21:59:40 by mloubet           #+#    #+#             */
-/*   Updated: 2022/02/21 22:07:08 by mloubet          ###   ########.fr       */
+/*   Updated: 2022/02/22 15:55:06 by mloubet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,37 +22,34 @@
 # include <unistd.h>
 # include <pthread.h>
 
-
 typedef struct s_philo
 {
-	int				id;
-	pthread_t		philo_life;
-	int				status;
+	pthread_t	philo_life;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	unsigned long	last_meal;
-	int				total_meals;
+	int			id;
+	int			status;
+	int			total_meals;
+	unsigned long		last_meal;
 	struct s_data	*data;
-}	t_philo;
+}				t_philo;
 
 typedef struct s_data
 {
-	t_philo			*philo;
-	pthread_t		end_simulation;
+	pthread_t	end_simulation;
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_activity;
 	pthread_mutex_t	eating;
-	int		nb_philosophers;
-	int		time_to_die;
-	int		time_to_eat;
-	int		time_to_sleep;
-	int		total_meals_for_each_philo;
-	unsigned long	start_time;
-	int				stop;
-	int				total_meals_count;
-	
-}	t_data;
-
+	t_philo			*philo;
+	int			nb_philosophers;
+	int			time_to_die;
+	int			time_to_eat;
+	int			time_to_sleep;
+	int			total_meals_for_each_philo;
+	unsigned long		start_time;
+	int			stop;
+	int			total_meals_count;
+}		t_data;
 
 int				right_args(int ac, char **av);
 int				save_right_data(t_data *data, int ac, char **av);

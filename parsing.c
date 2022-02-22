@@ -6,7 +6,7 @@
 /*   By: mloubet <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 21:53:42 by mloubet           #+#    #+#             */
-/*   Updated: 2022/02/21 21:58:34 by mloubet          ###   ########.fr       */
+/*   Updated: 2022/02/22 15:36:24 by mloubet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,10 @@ int	save_right_data(t_data *data, int ac, char **av)
 	data->time_to_die = ft_atoi(av[2]);
 	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
+	data->total_meals_count = 0;
 	if (ac == 6)
 		data->total_meals_for_each_philo = ft_atoi(av[5]);
+	else
+		data->total_meals_for_each_philo = -1;
 	return (0);
 }

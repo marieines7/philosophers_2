@@ -6,7 +6,7 @@
 /*   By: mloubet <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 16:39:24 by mloubet           #+#    #+#             */
-/*   Updated: 2022/02/21 21:53:00 by mloubet          ###   ########.fr       */
+/*   Updated: 2022/02/22 15:59:50 by mloubet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,10 @@
 
 unsigned long	current_timestamp(void)
 {
-	long int	time;
 	struct timeval	current_time;
 
-	time = 0;
 	gettimeofday(&current_time, NULL);
-	time = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
-	return (time);
+	return ((current_time.tv_sec * 1000) + (current_time.tv_usec / 1000));
 }
 
 void	timer(int activity_duration)
@@ -39,19 +36,18 @@ void	timer(int activity_duration)
 
 unsigned long	when_in_ms(unsigned long start_time)
 {
-	return(current_timestamp() - start_time);
+	return (current_timestamp() - start_time);
 }
 
-void free_all(t_data *data)
+void	free_all(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < data->nb_philosophers)
 		pthread_mutex_destroy(&data->forks[i]);
 	free(data->philo);
 	free(data->forks);
-
 }
 
 int	ft_strcmp(char *s, char *t)
