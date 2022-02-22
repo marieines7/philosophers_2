@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mloubet <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: mloubet <mloubet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/21 21:59:40 by mloubet           #+#    #+#             */
-/*   Updated: 2022/02/22 15:55:06 by mloubet          ###   ########.fr       */
+/*   Updated: 2022/02/22 16:07:42 by mloubet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,32 @@
 
 typedef struct s_philo
 {
-	pthread_t	philo_life;
-	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*right_fork;
-	int			id;
-	int			status;
-	int			total_meals;
+	pthread_t			philo_life;
+	pthread_mutex_t		*left_fork;
+	pthread_mutex_t		*right_fork;
+	int					id;
+	int					status;
+	int					total_meals;
 	unsigned long		last_meal;
-	struct s_data	*data;
+	struct s_data		*data;
 }				t_philo;
 
 typedef struct s_data
 {
-	pthread_t	end_simulation;
-	pthread_mutex_t	*forks;
-	pthread_mutex_t	print_activity;
-	pthread_mutex_t	eating;
-	t_philo			*philo;
-	int			nb_philosophers;
-	int			time_to_die;
-	int			time_to_eat;
-	int			time_to_sleep;
-	int			total_meals_for_each_philo;
+	pthread_t			end_simulation;
+	pthread_mutex_t		*forks;
+	pthread_mutex_t		print_activity;
+	pthread_mutex_t		eating;
+	t_philo				*philo;
+	int					nb_philosophers;
+	int					time_to_die;
+	int					time_to_eat;
+	int					time_to_sleep;
+	int					total_meals_for_each_philo;
 	unsigned long		start_time;
-	int			stop;
-	int			total_meals_count;
-}		t_data;
+	int					stop;
+	int					total_meals_count;
+}				t_data;
 
 int				right_args(int ac, char **av);
 int				save_right_data(t_data *data, int ac, char **av);
